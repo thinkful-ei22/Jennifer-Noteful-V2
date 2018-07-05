@@ -53,17 +53,10 @@ router.get('/:id', (req, res, next) => {
 router.put('/:id', (req, res, next) => {
   const id = req.params.id;
   const {title, content, folderId} = req.body;
-  const updateObj = {};
-  const updateableFields = ['title', 'content', 'folderId'];
   const updatedNote = {title: title, content: content, folder_id: folderId};
 
-  updateableFields.forEach(field => {
-    if (field in req.body) {
-      updateObj[field] = req.body[field];
-    }
-  });
 
-  if (!updateObj.title) {
+  if (!updatedNote.title) {
     const err = new Error('Missing `title` in request body');
     err.status = 400;
     return next(err);
