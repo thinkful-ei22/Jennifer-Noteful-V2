@@ -1,0 +1,14 @@
+-- SELECT * FROM notes;
+-- SELECT * FROM notes LIMIT 5;
+-- SELECT * FROM notes ORDER BY title ASC;
+-- SELECT * FROM notes ORDER BY title DESC;
+-- SELECT * FROM notes ORDER BY created ASC;
+-- SELECT * FROM notes WHERE title = '10 ways cats can help you live to 100';
+-- SELECT * FROM notes WHERE title LIKE '10%';
+-- UPDATE notes SET title = 'Does this work?' WHERE title = '10 ways cats can help you lie to 100';
+-- INSERT INTO notes (title, content) VALUES ('A new cat note','This won''t work');
+-- DELETE FROM notes WHERE id='12';
+--ALTER TABLE notes DROP COLUMN created;
+-- ALTER TABLE notes ADD COLUMN created date;
+-- SELECT title, created FROM notes;
+-- SELECT id FROM notes;
