@@ -30,8 +30,6 @@ router.get('/:id', (req, res, next) => {
 //  Put update an item
 router.put('/:id', (req, res, next) => {
   const id = req.params.id;
-  
-  /***** Never trust users - validate input *****/
   const updateObj = {};
   const updateableFields = ['name'];
   
@@ -41,7 +39,6 @@ router.put('/:id', (req, res, next) => {
     }
   });
   
-  /***** Never trust users - validate input *****/
   if (!updateObj.name) {
     const err = new Error('Missing `name` in request body');
     err.status = 400;
@@ -58,7 +55,7 @@ router.put('/:id', (req, res, next) => {
     });
 });
   
-// Post (insert) an item
+// Post (insert) a folder
 router.post('/', (req, res, next) => {
   const {name} = req.body;
   
@@ -81,7 +78,7 @@ router.post('/', (req, res, next) => {
     });
 });
   
-// Delete an item
+// Delete a folder
 router.delete('/:id', (req, res, next) => {
   const id = req.params.id;
   
