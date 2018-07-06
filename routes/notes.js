@@ -71,10 +71,15 @@ router.get('/:id', (req, res, next) => {
 });
 
 // Put update an item
+
 router.put('/:id', (req, res, next) => {
   const id = req.params.id;
-  const {title, content, folderId, tagId} = req.body;
-  const updatedNote = {title: title, content: content, folder_id: folderId, tag_id: tagId};
+  const {title, content, folderId, tags} = req.body;
+  const updatedNote = {
+    title: title, 
+    content: content, 
+    folder_id: folderId
+  };
 
 
   if (!updatedNote.title) {
@@ -86,24 +91,48 @@ router.put('/:id', (req, res, next) => {
   knex('notes')
     .update(updatedNote)
     .where('notes.id', id)
-    .returning(['id', 'title', 'content', 'folder_id', 'tag_id'])
-    .then(([item]) => {
-      res.json(item);})
-    .catch(err => {
-      next(err);
-    });
+    .returning('id')
+    .then(()=>{
+      return knex('notes_tags')
+        .where('note_id', id)
+        .del();
+    }
+    )
+    .then(()=>{
+      const tagsInsert = tags.map(tagId => ({ note_id: id, tag_id: tagId }));
+      return knex.insert(tagsInsert).into('notes_tags');
+    })
+    .then(()=>{
+      return knex.select('notes.id', 'title', 'content',
+        'folders.id as folder_id', 'folders.name as folderName',
+        'tags.id as tagId', 'tags.name as tagName')
+        .from('notes')
+        .leftJoin('folders', 'notes.folder_id', 'folders.id')
+        .leftJoin('notes_tags', 'notes.id', 'notes_tags.note_id')
+        .leftJoin('tags', 'tags.id', 'notes_tags.tag_id')
+        .where('notes.id', id);
+    })
+    .then(result => {
+      if (result) {
+        // Hydrate the results
+        const hydrated = hydrateNotes(result)[0];
+        res.status(200).json(hydrated);
+      } else {
+        next();
+      }
+    })
+    .catch(err => next(err));
 });
 
 // Post (insert) an item
 router.post('/', (req, res, next) => {
-  const { title, content, folderId, tags } = req.body;
+  const { title, content, folderId, tags} = req.body;
 
   const newItem = { 
     title: title,
     content: content,
     folder_id: folderId,
-    // tag_id: tagId
-    tags:[] };
+  };
   /***** Never trust users - validate input *****/
   if (!newItem.title) {
     const err = new Error('Missing `title` in request body');
