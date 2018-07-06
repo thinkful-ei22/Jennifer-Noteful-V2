@@ -50,3 +50,34 @@
 -- SELECT * FROM notes
 -- LEFT JOIN folders ON notes.folder_id = folders.id;
 -- WHERE notes.id = 1005;
+
+
+-- DROP TABLE IF EXISTS tags;
+
+-- CREATE TABLE tags (
+--     id serial PRIMARY KEY,
+--     name text NOT NULL UNIQUE
+-- );
+
+-- SELECT * FROM tags;
+
+-- DROP TABLE IF EXISTS notes_tags;
+-- CREATE TABLE notes_tags (
+--   note_id INTEGER NOT NULL REFERENCES notes ON DELETE CASCADE,
+--   tag_id INTEGER NOT NULL REFERENCES tags ON DELETE CASCADE
+-- );
+
+-- INSERT INTO tags(name) VALUES
+--   ('Funny'),
+--   ('Informational'),
+--   ('Exciting'),
+--   ('Boring');
+
+-- SELECT title, tags.name, folders.name FROM notes
+-- LEFT JOIN folders ON notes.folder_id = folders.id
+-- LEFT JOIN notes_tags ON notes.id = notes_tags.note_id
+-- LEFT JOIN tags ON notes_tags.tag_id = tags.id;
+-- INSERT INTO notes_tags(note_id,tag_id) VALUES
+-- (1002, 1),
+-- (1003,3),
+-- (1005, 4);
